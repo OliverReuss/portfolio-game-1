@@ -38,7 +38,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: WebGL
-          buildName: Senshi-Embers-of-Hope
+          buildName: Portfolio-Game-1
           versioning: Custom
           version: 1.0.0
 

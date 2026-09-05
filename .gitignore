@@ -1,17 +1,17 @@
-# Unity generated
-/[Ll]ibrary/
-/[Tt]emp/
-/[Oo]bj/
-/[Bb]uild/
-/[Bb]uilds/
-/[Ll]ogs/
-/[Uu]ser[Ss]ettings/
-/[Mm]emoryCaptures/
+## Unity Gitignore
+# Official Unity .gitignore adapted for common projects
 
-# VS Code / IDE settings
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Visual Studio / Rider / VSCode
+.vs/
 .vscode/
 .idea/
 *.csproj
+*.unityproj
 *.sln
 *.suo
 *.user
@@ -20,9 +20,72 @@
 *.booproj
 *.svd
 *.pdb
+*.mdb
 *.opendb
 *.VC.db
+*.slnx
 
-# OS generated
-.DS_Store
-Thumbs.db
+# Unity generated folders
+/Library/
+/Temp/
+/Obj/
+/Build/
+/Builds/
+/Logs/
+/UserSettings/
+/MemoryCaptures/
+/Recordings/
+/LocalCache/
+
+# Asset pipeline
+/Assets/AddressableAssetsData/*/*.bin*
+/Assets/StreamingAssets/aa.meta
+/Assets/StreamingAssets/aa/*
+
+# Asset Store tools
+/Assets/AssetStoreTools*
+
+# Packed samples and packages
+*.unitypackage
+
+# Builds
+*.apk
+*.aab
+*.exe
+*.app
+
+# Audio / video cache
+*.weba
+
+# Cache and logs
+*.log
+*.cache
+
+# Test results
+/TestResults/
+coverage/
+
+# Secrets and keys
+.env
+.env.*
+*.pem
+*.p12
+*.key
+
+# Git LFS metadata - keep pointer files in repo (actual binary tracked via LFS)
+*.psd
+!*.png
+*.jpg
+*.jpeg
+*.tga
+*.gif
+*.mp4
+*.mov
+*.mp3
+*.wav
+*.ogg
+*.fbx
+
+# Cleanup
+bfg.jar
+Portfolio-Game-1.slnx

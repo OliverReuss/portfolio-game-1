@@ -1,0 +1,61 @@
+name: Unity WebGL Build + Itch.io Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Validate Unity activation secrets
+        run: |
+          if [ -z "${{ secrets.UNITY_LICENSE }}" ] && ( [ -z "${{ secrets.UNITY_SERIAL }}" ] || [ -z "${{ secrets.UNITY_EMAIL }}" ] || [ -z "${{ secrets.UNITY_PASSWORD }}" ] ); then
+            echo "ERROR: No Unity activation provided. Set UNITY_LICENSE (preferred) OR UNITY_SERIAL + UNITY_EMAIL + UNITY_PASSWORD as Secrets."
+            exit 1
+          fi
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ runner.os }}-WebGL-${{ hashFiles('Assets/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-${{ runner.os }}-WebGL-
+
+      - name: Build Unity project for WebGL
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: WebGL
+          buildName: Senshi-Embers-of-Hope
+          versioning: Custom
+          version: 1.0.0
+
+      - name: Install Butler
+        run: |
+          curl -L -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
+          ./butler --version
+
+      - name: Upload WebGL build to itch.io
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
+          ITCHIO_USERNAME: ${{ secrets.ITCHIO_USERNAME }}
+          ITCHIO_GAME: ${{ secrets.ITCHIO_GAME }}
+        run: |
+          find build -maxdepth 4 -type d -iname '*WebGL*' -print
+          WEBGL_DIR="$(find build -maxdepth 4 -type d -iname '*WebGL*' | head -n 1)"
+          echo "Using WebGL dir: $WEBGL_DIR"
+          ./butler push "$WEBGL_DIR" "${{ secrets.ITCHIO_USERNAME }}/${{ secrets.ITCHIO_GAME }}:html"

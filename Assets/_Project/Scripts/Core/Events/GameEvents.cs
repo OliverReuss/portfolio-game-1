@@ -1,9 +1,11 @@
 using System;
 
+// Class for managing events and triggering them so subscribed elements can react
 public static class GameEvents
 {
     // System & Game Loop Events
     public static event Action<GameState> OnGameStateChanged;
+    public static event Action OnLevelLoaded;
 
     // Player Stats Events
     public static event Action OnPlayerDied;
@@ -23,5 +25,10 @@ public static class GameEvents
     public static void TriggerPlayerHealthChanged(int current, int max)
     {
         OnPlayerHealthChanged?.Invoke(current, max);
+    }
+
+    public static void TriggerLevelLoaded()
+    {
+        OnLevelLoaded?.Invoke();
     }
 }

@@ -1,22 +1,35 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
+// Class for central game coordination across all scenes
+// References other managers and controlls global game states
 public class GameManager : MonoBehaviour
 {
     // Singleton Access
     public static GameManager Instance { get; private set; }
-    public GameState CurrentState { get; private set; }
+    public GameState currentState { get; private set; }
+
+    // Reference SubManagers
+    [SerializeField] private LevelManager levelManager;
+    [SerializeField] private UIManager uiManager;
+
+    // Reference Scenes
+    [SerializeField] private string sceneName;
 
     private void Awake()
     {
         // Enforce Singleton Pattern
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Destroy(this.gameObject);
             return;
         }
 
+        // Persist GameManger and SubMangers across all scenes
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(this.gameObject);
+
+        FetchSubManagerReferences();
     }
 
     private void Start()
@@ -26,15 +39,15 @@ public class GameManager : MonoBehaviour
 
     public void ChangeState(GameState newState)
     {
-        if (CurrentState == newState)
+        if (currentState == newState)
             return;
 
-        CurrentState = newState;
+        currentState = newState;
 
         switch (newState)
         {
             case GameState.Boot:
-                // Bootstrapping systems
+                levelManager.LoadInitialSceneAsync(sceneName);
                 break;
             case GameState.Gameplay:
                 Time.timeScale = 1f;
@@ -49,5 +62,17 @@ public class GameManager : MonoBehaviour
 
         // Broadcast State Change
         GameEvents.TriggerGameStateChanged(newState);
+    }
+
+    public void FetchSubManagerReferences()
+    {
+        if (levelManager == null)
+        {
+            levelManager = GetComponentInChildren<LevelManager>();
+        }
+        if (uiManager == null)
+        {
+            uiManager = GetComponentInChildren<UIManager>();
+        }
     }
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Class for managing the player by reading input, setting the player state and moving the player
 public class PlayerStateMachine : MonoBehaviour
 {
     // Components
